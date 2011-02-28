@@ -9,13 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "EGOPhotoGlobal.h"
 
-@interface MyPhotoSource : NSObject <EGOPhotoSource> {
-	
-	NSArray *_photos;
-	NSInteger _numberOfPhotos;
+@interface MyPhotoSource : EGOQuickPhotoSource {
 
 }
-
-- (id)initWithPhotos:(NSArray*)photos;
 
 @end

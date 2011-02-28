@@ -27,36 +27,48 @@
 #import "EGOQuickPhoto.h"
 
 @implementation EGOQuickPhoto
-@synthesize URL=_URL, caption=_caption, image=_image, size=_size, failed=_failed;
+@synthesize URL=_URL, caption=_caption, image=_image, size=_size, failed=_failed, thumb=_thumb, thumbURL=_thumbURL;
 
-- (id)initWithImageURL:(NSURL*)aURL name:(NSString*)aName image:(UIImage*)aImage {
+- (id)initWithImageURL:(NSURL*)aURL image:(UIImage*)aImage name:(NSString*)aName thumbURL:(NSURL *)aThumbURL thumb:(UIImage *)aThumb{
 	if (self = [super init]) {
 		_URL = [aURL retain];
 		_caption = [aName retain];
 		_image = [aImage retain];
-		
+		_thumbURL = [aThumbURL retain];
+		_thumb = [aThumb retain];
 	}
 	
 	return self;
 }
 
+- (id)initWithImageURL:(NSURL*)aURL name:(NSString*)aName image:(UIImage*)aImage {
+	return [self initWithImageURL:aURL image:aImage name:aName thumbURL:aURL thumb:aImage];
+}
+
 - (id)initWithImageURL:(NSURL*)aURL name:(NSString*)aName {
-	return [self initWithImageURL:aURL name:aName image:nil];
+	return [self initWithImageURL:aURL image:nil name:aName thumbURL:aURL thumb:nil];
 }
 
 - (id)initWithImageURL:(NSURL*)aURL {
-	return [self initWithImageURL:aURL name:nil image:nil];
+	return [self initWithImageURL:aURL image:nil name:nil thumbURL:aURL thumb:nil];
 }
 
 - (id)initWithImage:(UIImage*)aImage {
-	return [self initWithImageURL:nil name:nil image:aImage];
+	return [self initWithImageURL:nil image:aImage name:nil thumbURL:nil thumb:aImage];
+}
+
+- (id)initWithImageURL:(NSURL*)aURL thumbURL:(NSURL *)aThumbURL name:(NSString*)aName {
+	return [self initWithImageURL:aURL image:nil name:aName thumbURL:aThumbURL thumb:nil];
 }
 
 - (void)dealloc {
 	[_URL release], _URL=nil;
 	[_image release], _image=nil;
 	[_caption release], _caption=nil;
-	
+	[_thumb release];
+	_thumb = nil;
+	[_thumbURL release];
+	_thumbURL = nil;
 	[super dealloc];
 }
 

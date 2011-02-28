@@ -10,6 +10,9 @@
 #import "EGOPhotoGlobal.h"
 #import "MyPhoto.h"
 #import "MyPhotoSource.h"
+#import "EGOQuickPhoto.h"
+#import "EGOQuickPhotoSource.h"
+#import "EGOThumbsViewController.h"
 
 @implementation RootViewController_iPhone
 
@@ -68,7 +71,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 2;
+    return 3;
 }
 
 
@@ -86,6 +89,14 @@
 		cell.textLabel.text = @"Photos";
 	} else {
 		cell.textLabel.text = @"Single Photo";
+	}
+	
+	if (indexPath.row == 0) {	
+		cell.textLabel.text = @"Photos";
+	} else if (indexPath.row == 1) {
+		cell.textLabel.text = @"Single Photo";
+	} else {
+		cell.textLabel.text = @"Thumbs";
 	}
 	
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -165,6 +176,35 @@
 		[photo release];
 		[source release];
 		
+	} else {
+		EGOQuickPhoto *photo = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://a3.twimg.com/profile_images/66601193/cactus.jpg"] name:@" laksd;lkas;dlkaslkd ;a"];
+		EGOQuickPhoto *photo2 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"https://s3.amazonaws.com/twitter_production/profile_images/425948730/DF-Star-Logo.png"] name:@"lskdjf lksjdhfk jsdfh ksjdhf sjdhf ksjdhf ksdjfh ksdjh skdjfh skdfjh "];
+		EGOQuickPhoto *photo3 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://fc09.deviantart.net/fs70/f/2010/024/6/2/Pug_by_SiteTheWhiteMoonWolf.jpg"]
+																   name:@"asdfasdfasdf"];
+		EGOQuickPhoto *photo4 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://example.com/broken_image.jpg"] 
+																   name:@"title title title"];	
+		
+		EGOQuickPhotoSource *source = [[EGOQuickPhotoSource alloc] initWithPhotos:[NSArray arrayWithObjects:photo, photo2, photo3, photo4, 
+																				   photo, photo2, photo3, photo4,
+																				   photo, photo2, photo3, photo4, 
+																				   photo, photo2, photo3, photo4, 
+																				   photo, photo2, photo3, photo4, 
+																				   photo, photo2, photo3, photo4, 
+																				   photo, photo2, photo3, photo4,
+																				   photo, photo2, photo3, photo4,
+																				   photo, photo2, photo3, photo4,
+																				   photo, photo2, photo3, photo4,
+																				   photo, photo2, photo3, photo4,
+																				   nil]];
+		
+		EGOThumbsViewController *thumbsController = [[EGOThumbsViewController alloc] initWithPhotoSource:source];
+		[self.navigationController pushViewController:thumbsController animated:YES];
+		[thumbsController release];
+		[source release];		
+		[photo release];
+		[photo2 release];
+		[photo3 release];
+		[photo4 release];
 	}
 }
 

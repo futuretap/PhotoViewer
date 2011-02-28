@@ -34,10 +34,14 @@
 	NSString *_caption;
 	CGSize _size;
 	UIImage *_image;
+	NSURL *_thumbURL;
+	UIImage *_thumb;
 	
 	BOOL _failed;
 }
 
+- (id)initWithImageURL:(NSURL*)aURL image:(UIImage*)aImage name:(NSString*)aName thumbURL:(NSURL *)aThumbURL thumb:(UIImage *)aThumb;
+- (id)initWithImageURL:(NSURL*)aURL thumbURL:(NSURL *)aThumbURL name:(NSString*)aName;
 - (id)initWithImageURL:(NSURL*)aURL name:(NSString*)aName image:(UIImage*)aImage;
 - (id)initWithImageURL:(NSURL*)aURL name:(NSString*)aName;
 - (id)initWithImageURL:(NSURL*)aURL;

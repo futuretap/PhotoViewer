@@ -35,7 +35,6 @@
 	if (self = [super init]) {
 		_photos = [photos retain];
 		_numberOfPhotos = [_photos count];
-		
 	}
 	
 	return self;
@@ -45,9 +44,41 @@
 	return [_photos objectAtIndex:index];
 }
 
+- (NSInteger)count {
+	return [_photos count];
+}
+
 - (void)dealloc{
 	[_photos release], _photos=nil;
 	[super dealloc];
 }
 
+
+#pragma mark -
+#pragma mark Customization
+// Subclass and override these to customize.
+
+- (UIColor *)navigationBarTintColor {
+	return nil;
+}
+
+- (UIColor *)backgroundColor{
+	return [UIColor blackColor];
+}
+
+- (UIColor *)thumbnailBackgroundColor{
+	return [UIColor whiteColor];
+}
+
+- (NSInteger)thumbnailSize{
+	return 75;
+}
+
+- (UIViewContentMode)thumbnailContentMode{
+	return UIViewContentModeScaleAspectFill;
+}
+
+- (BOOL)thumbnailsHaveBorder{
+	return YES;
+}
 @end

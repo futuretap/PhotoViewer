@@ -10,19 +10,8 @@
 #import "EGOPhotoGlobal.h"
 
 
-@interface MyPhoto : NSObject <EGOPhoto>{
-	
-	NSURL *_URL;
-	NSString *_caption;
-	CGSize _size;
-	UIImage *_image;
-	
-	BOOL _failed;
-	
+@interface MyPhoto : EGOQuickPhoto{
+		
 }
 
-- (id)initWithImageURL:(NSURL*)aURL name:(NSString*)aName image:(UIImage*)aImage;
-- (id)initWithImageURL:(NSURL*)aURL name:(NSString*)aName;
-- (id)initWithImageURL:(NSURL*)aURL;
-- (id)initWithImage:(UIImage*)aImage;
 @end

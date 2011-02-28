@@ -38,10 +38,18 @@
  */
 @property(nonatomic,readonly) NSInteger numberOfPhotos;
 
+
 /*
  * Should return a photo from the photos array, at the index passed.
  */
 - (id)photoAtIndex:(NSInteger)index;
+
+- (UIColor *)navigationBarTintColor;
+- (UIColor *)backgroundColor;
+- (UIColor *)thumbnailBackgroundColor;
+- (NSInteger)thumbnailSize;
+- (UIViewContentMode)thumbnailContentMode;
+- (BOOL)thumbnailsHaveBorder;
 
 @end
 
@@ -76,5 +84,14 @@
  */
 @property(nonatomic,assign,getter=didFail) BOOL failed;
 
+/*
+ * URL for thumbnail image
+ */
+@property(nonatomic,retain) NSURL *thumbURL;
+
+/*
+ * thumbnail image
+ */
+@property(nonatomic,retain) UIImage *thumb;
 
 @end
