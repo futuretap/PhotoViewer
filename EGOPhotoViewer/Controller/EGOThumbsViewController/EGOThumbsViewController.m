@@ -11,7 +11,7 @@
 
 @implementation EGOThumbsViewController
 
-@synthesize photoSource=_photoSource, storedStyles;
+@synthesize photoSource=_photoSource, storedStyles, delegate;
 
 - (id)initWithPhotoSource:(id<EGOPhotoSource>)aSource {
 	if (self = [super init]) {
@@ -78,10 +78,8 @@
 #pragma mark -
 
 - (void)didSelectThumbAtIndex:(NSInteger)index {
-	EGOPhotoViewController *photoController = [[EGOPhotoViewController alloc] initWithPhotoSource:self.photoSource];
-	[self.navigationController pushViewController:photoController animated:YES];
-	[photoController moveToPhotoAtIndex:index animated:NO];
-	[photoController release];
+	if (self.delegate != nil)
+		[self.delegate thumbsViewController:self didSelectThumbAtIndex:index];
 }
 
 #pragma mark -

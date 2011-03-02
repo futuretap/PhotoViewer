@@ -27,9 +27,10 @@
 #import <MessageUI/MessageUI.h>
 #import "EGOPhotoSource.h"
 #import "EGOPhotoGlobal.h"
+#import "EGOThumbsViewController.h"
 
 @class EGOPhotoImageView, EGOPhotoCaptionView;
-@interface EGOPhotoViewController : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate> {
+@interface EGOPhotoViewController : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, EGOThumbsViewControllerDelegate> {
 @private
 	id <EGOPhotoSource> _photoSource;
 	EGOPhotoCaptionView *_captionView;

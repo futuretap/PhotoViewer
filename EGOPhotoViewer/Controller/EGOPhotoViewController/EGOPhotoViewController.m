@@ -25,6 +25,7 @@
 //
 
 #import "EGOPhotoViewController.h"
+#import "EGOThumbsViewController.h"
 
 @interface EGOPhotoViewController (Private)
 - (void)loadScrollViewWithPage:(NSInteger)page;
@@ -211,6 +212,13 @@
 		self.navigationController.toolbar.translucent = YES;
 	}
 
+	if([self.photoSource numberOfPhotos]>1) {
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+												  initWithTitle:NSLocalizedString(@"See All", @"")
+												  style:UIBarButtonItemStyleBordered target:self action:@selector(showThumbnails)];
+	} else {
+		self.navigationItem.rightBarButtonItem = nil;
+	}
 	
 	[self setupToolbar];
 	[self setupScrollViewContentSize];
@@ -980,24 +988,24 @@
 	if ([MFMailComposeViewController canSendMail]) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && !_popover) {
-			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Save", @"Copy", @"Email", nil];
+			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save to Album",@""), NSLocalizedString(@"Copy",@""), NSLocalizedString(@"Email",@""), nil];
 		} else {
-			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Save", @"Copy", @"Email", nil];
+			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save to Album",@""), NSLocalizedString(@"Copy",@""), NSLocalizedString(@"Email",@""), nil];
 		}
 #else
-		actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Save", @"Copy", @"Email", nil];
+		actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save to Album",@""), NSLocalizedString(@"Copy",@""), NSLocalizedString(@"Email",@""), nil];
 #endif
 		
 	} else {
 		
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && !_popover) {
-			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Save", @"Copy", nil];
+			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save to Album",@""), NSLocalizedString(@"Copy",@""), nil];
 		} else {
-			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Save", @"Copy", nil];
+			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save to Album",@""), NSLocalizedString(@"Copy",@""), nil];
 		}
 #else
-		actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Save", @"Copy", nil];
+		actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save to Album",@""), NSLocalizedString(@"Copy",@""), nil];
 #endif
 		
 	}
@@ -1027,6 +1035,17 @@
 	}
 }
 
+-(void)showThumbnails {
+	EGOThumbsViewController *thumbsController = [[EGOThumbsViewController alloc] initWithPhotoSource:self.photoSource];
+	thumbsController.delegate = self;
+	[self.navigationController pushViewController:thumbsController animated:YES];
+	[thumbsController release];
+}
+
+-(void)thumbsViewController:(EGOThumbsViewController *)controller didSelectThumbAtIndex:(NSInteger)index {
+	[controller.navigationController popViewControllerAnimated:YES];
+	[self moveToPhotoAtIndex:index animated:YES];
+}
 
 #pragma mark -
 #pragma mark Memory
