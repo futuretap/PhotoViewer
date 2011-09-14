@@ -88,7 +88,7 @@
 - (void)setCaptionHidden:(BOOL)hidden{
 	if (_hidden==hidden) return;
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		
 		[UIView beginAnimations:nil context:NULL];

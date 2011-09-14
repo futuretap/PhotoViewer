@@ -28,6 +28,7 @@
 
 #define ZOOM_VIEW_TAG 0x101
 
+#ifndef BUILD_FOR_3_0
 @interface RotateGesture : UIRotationGestureRecognizer {}
 @end
 
@@ -39,7 +40,7 @@
 	return YES;
 }
 @end
-
+#endif
 
 @interface EGOPhotoImageView (Private)
 - (void)layoutScrollViewAnimated:(BOOL)animated;
@@ -87,10 +88,11 @@
 		_activityView = [activityView retain];
 		[activityView release];
 		
+#ifndef BUILD_FOR_3_0
 		RotateGesture *gesture = [[RotateGesture alloc] initWithTarget:self action:@selector(rotate:)];
 		[self addGestureRecognizer:gesture];
 		[gesture release];
-		
+#endif
 	}
     return self;
 }
@@ -124,44 +126,48 @@
 		
 		if ([self.photo.URL isFileURL]) {
 			
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
-			
-			NSError *error = nil;
-			NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[self.photo.URL path] error:&error];
-			NSInteger fileSize = [[attributes objectForKey:NSFileSize] integerValue];
-
-			if (fileSize >= 1048576 && [[[UIDevice currentDevice] systemVersion] floatValue] >= 4.0) {
-								
-				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-					
-					UIImage *_image = nil;
-					NSData *_data = [NSData dataWithContentsOfURL:self.photo.URL];
-					if (!_data) {
-						[self handleFailedImage];
-					} else {
-						_image = [UIImage imageWithData:_data];
-					}
-					
-					dispatch_async(dispatch_get_main_queue(), ^{
-						
-						if (_image!=nil) {
-							[self setupImageViewWithImage:_image];
-						}
-						
-						
-					});
-								   
-				});
-		
-			} else {
-				
-				self.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.photo.URL]];
-				
-			}
-
+#ifndef BUILD_FOR_3_0
+			IF_IOS4_OR_GREATER
+			(			
+			 NSError *error = nil;
+			 NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[self.photo.URL path] error:&error];
+			 NSInteger fileSize = [[attributes objectForKey:NSFileSize] integerValue];
+			 
+			 if (fileSize >= 1048576) {
+				 
+				 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+					 
+					 UIImage *_image = nil;
+					 NSData *_data = [NSData dataWithContentsOfURL:self.photo.URL];
+					 if (!_data) {
+						 [self handleFailedImage];
+					 } else {
+						 _image = [UIImage imageWithData:_data];
+					 }
+					 
+					 dispatch_async(dispatch_get_main_queue(), ^{
+						 
+						 if (_image!=nil) {
+							 [self setupImageViewWithImage:_image];
+						 }
+						 
+						 
+					 });
+					 
+				 });
+				 
+			 } else {
+				 
+				 self.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.photo.URL]];
+				 
+			 }
+			 
+			 );
+			IF_PRE_IOS4(self.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.photo.URL]];);
 #else
 			self.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.photo.URL]];
 #endif
+
 			
 			
 		} else {

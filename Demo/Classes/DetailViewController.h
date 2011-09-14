@@ -8,9 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DetailViewController : UIViewController <UIPopoverControllerDelegate, UISplitViewControllerDelegate, UIPopoverControllerDelegate> {
+@interface DetailViewController : UIViewController
+
+#ifndef BUILD_FOR_3_0 
+<UIPopoverControllerDelegate, UISplitViewControllerDelegate, UIPopoverControllerDelegate> 
+#endif
+
+{
     
+#ifndef BUILD_FOR_3_0 
     UIPopoverController *popoverController;
+#endif
     UIToolbar *toolbar;
     
     id detailItem;

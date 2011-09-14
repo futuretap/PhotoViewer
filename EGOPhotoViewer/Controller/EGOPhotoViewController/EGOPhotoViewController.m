@@ -135,7 +135,7 @@
 	[views release];
 
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 	if ([self.photoSource numberOfPhotos] == 1 && UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
 		
 		[self.navigationController setNavigationBarHidden:YES animated:NO];
@@ -172,7 +172,7 @@
 			view = view.superview;
 		}
 		
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 		if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad && _popover==nil) {
 			[self.navigationController setNavigationBarHidden:NO animated:NO];
 		}
@@ -264,7 +264,7 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		return YES;
 	}
@@ -334,7 +334,7 @@
 		return;
 	}
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 	if (!_popover && UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad && !_fromPopover) {
 		if (self.modalPresentationStyle == UIModalPresentationFullScreen) {
 			UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(done:)];
@@ -409,14 +409,15 @@
 #pragma mark Bar/Caption Methods
 
 - (void)setStatusBarHidden:(BOOL)hidden animated:(BOOL)animated{
+#ifndef BUILD_FOR_3_0
 	if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) return; 
-	
+#endif	
 	if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 3.2) {
 		
 		[[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:UIStatusBarAnimationFade];
 		
 	} else {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < 30200
+#ifdef BUILD_FOR_3_0
 		[[UIApplication sharedApplication] setStatusBarHidden:hidden animated:animated];
 #endif
 	}
@@ -433,7 +434,7 @@
 		
 	[self setStatusBarHidden:hidden animated:animated];
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		
 		if (!_popover) {
@@ -484,6 +485,7 @@
 
 - (void)setupViewForPopover{
 	
+#ifndef BUILD_FOR_3_0
 	if (!_popoverOverlay && _popover && [self.photoSource numberOfPhotos] == 1) {
 				
 		UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0.0f, self.view.frame.size.height, self.view.frame.size.width, 40.0f)];
@@ -513,7 +515,7 @@
 		[UIView commitAnimations];
 		
 	}
-	
+#endif	
 }
 
 - (CATransform3D)transformForCurrentOrientation{
@@ -702,7 +704,7 @@
 		[_captionView setCaptionText:[[self.photoSource photoAtIndex:_pageIndex] caption] hidden:NO];
 	}
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 			
 	if([self respondsToSelector:@selector(setContentSizeForViewInPopover:)] && [self.photoSource numberOfPhotos] == 1) {
 		
@@ -987,7 +989,7 @@
 	UIActionSheet *actionSheet;
 	
 	if ([MFMailComposeViewController canSendMail]) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && !_popover) {
 			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save to Album",@""), NSLocalizedString(@"Copy",@""), NSLocalizedString(@"Email",@""), nil];
 		} else {
@@ -999,7 +1001,7 @@
 		
 	} else {
 		
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && !_popover) {
 			actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save to Album",@""), NSLocalizedString(@"Copy",@""), nil];
 		} else {

@@ -28,7 +28,7 @@
     
     // Add the split view controller's view to the window and display.
 		
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+#ifndef BUILD_FOR_3_0
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
 		
 		UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:rootViewController_iPhone];

@@ -54,9 +54,11 @@
         [self configureView];
     }
 	
+#ifndef BUILD_FOR_3_0
     if (popoverController != nil) {
         [popoverController dismissPopoverAnimated:YES];
-    }        
+    }
+#endif
 }
 
 
@@ -69,6 +71,7 @@
 #pragma mark -
 #pragma mark Split view support
 
+#ifndef BUILD_FOR_3_0
 - (void)splitViewController: (UISplitViewController*)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem*)barButtonItem forPopoverController: (UIPopoverController*)pc {
     
 	
@@ -82,7 +85,7 @@
 	
     self.popoverController = nil;
 }
-
+#endif
 
 #pragma mark -
 #pragma mark Rotation support
@@ -92,6 +95,7 @@
     return YES;
 }
 
+#ifndef BUILD_FOR_3_0
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
 	
 	if (popoverController) {
@@ -99,6 +103,7 @@
 	}
 	
 }
+#endif
 
 #pragma mark -
 #pragma mark EGOPhotoViewer Popover
@@ -112,7 +117,9 @@
 	MyPhotoSource *source = [[MyPhotoSource alloc] initWithPhotos:[NSArray arrayWithObjects:webPhoto, filePathPhoto, inMemoryPhoto, nil]];
 
 	EGOPhotoViewController *photoController = [[EGOPhotoViewController alloc] initWithPhotoSource:source];
+#ifndef BUILD_FOR_3_0
 	photoController.contentSizeForViewInPopover = CGSizeMake(480.0f, 480.0f);
+#endif
 	
 	[webPhoto release];
 	[filePathPhoto release];
@@ -120,10 +127,12 @@
 	[source release];
 	
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:photoController];
+#ifndef BUILD_FOR_3_0
 	UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:navController];
 	popover.delegate = self;
 	[popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
 	popoverController = popover;
+#endif
 	
 	[photoController release];
 	[navController release];
@@ -133,12 +142,12 @@
 
 #pragma mark -
 #pragma mark Popover Delegate Methods
-
+#ifndef BUILD_FOR_3_0
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)aPopoverController{
 	[aPopoverController release];
 	popoverController=nil;
 }
-
+#endif
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -174,7 +183,9 @@
 - (void)viewDidUnload {
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+#ifndef BUILD_FOR_3_0
     self.popoverController = nil;
+#endif
 }
 
 

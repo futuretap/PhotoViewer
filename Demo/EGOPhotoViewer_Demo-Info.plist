@@ -28,6 +28,8 @@
 	<string>MainWindowiPhone</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow</string>
+	<key>NSMainNibFile</key>
+	<string>MainWindowiPhone</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
