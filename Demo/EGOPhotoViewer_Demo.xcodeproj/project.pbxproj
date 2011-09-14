@@ -525,7 +525,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Devin Doty (294DDWXTAY)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -533,7 +533,7 @@
 				GCC_PREFIX_HEADER = EGOPhotoViewer_Demo_Prefix.pch;
 				INFOPLIST_FILE = "EGOPhotoViewer_Demo-Info.plist";
 				PRODUCT_NAME = EGOPhotoViewer_Demo;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C1BF0C20-972E-4EB9-A0A7-E37FC9DCADAF";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
