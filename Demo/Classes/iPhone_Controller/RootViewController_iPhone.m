@@ -154,14 +154,17 @@
 		
 		MyPhoto *photo = [[MyPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://a3.twimg.com/profile_images/66601193/cactus.jpg"] name:@" laksd;lkas;dlkaslkd ;a"];
 		MyPhoto *photo2 = [[MyPhoto alloc] initWithImageURL:[NSURL URLWithString:@"https://s3.amazonaws.com/twitter_production/profile_images/425948730/DF-Star-Logo.png"] name:@"lskdjf lksjdhfk jsdfh ksjdhf sjdhf ksjdhf ksdjfh ksdjh skdjfh skdfjh "];
-		MyPhotoSource *source = [[MyPhotoSource alloc] initWithPhotos:[NSArray arrayWithObjects:photo, photo2, photo, photo2, photo, photo2, photo, photo2, nil]];
+		MyPhoto *photo3 = [[MyPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f.jpg"] name:@"3523321514_371d9ac42f.jpg"];
+		MyPhoto *photo4 = [[MyPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b.jpg"] name:@"3339128908_7aecabc34b.jpg"];
+		MyPhoto *photo5 = [[MyPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f.jpg"] name:@"3338617424_7ff836d55f.jpg"];
+		MyPhoto *photo6 = [[MyPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b.jpg"] name:@"3329114220_5fbc5bc92b.jpg"];
+		MyPhotoSource *source = [[MyPhotoSource alloc] initWithPhotos:[NSArray arrayWithObjects:photo, photo2, photo3, photo4, photo5, photo6, photo, photo2, nil]];
 		
 		EGOPhotoViewController *photoController = [[EGOPhotoViewController alloc] initWithPhotoSource:source];
 		[self.navigationController pushViewController:photoController animated:YES];
 		
 		[photoController release];
-		[photo release];
-		[photo2 release];
+		[photo release]; [photo2 release]; [photo3 release]; [photo4 release]; [photo5 release]; [photo6 release];
 		[source release];
 		
 	} else if (indexPath.row == 1) {
@@ -184,11 +187,17 @@
 		EGOQuickPhoto *photo2 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"https://s3.amazonaws.com/twitter_production/profile_images/425948730/DF-Star-Logo.png"] name:@"lskdjf lksjdhfk jsdfh ksjdhf sjdhf ksjdhf ksdjfh ksdjh skdjfh skdfjh "];
 		EGOQuickPhoto *photo3 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://fc09.deviantart.net/fs70/f/2010/024/6/2/Pug_by_SiteTheWhiteMoonWolf.jpg"]
 																   name:@"asdfasdfasdf"];
-		EGOQuickPhoto *photo4 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://example.com/broken_image.jpg"] 
+		EGOQuickPhoto *photo4 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f.jpg"] 
 																   name:@"title title title"];	
+		EGOQuickPhoto *photo5 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b.jpg"] 
+																   name:@"3339128908_7aecabc34b.jpg"];	
+		EGOQuickPhoto *photo6 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f.jpg"] 
+																   name:@"3338617424_7ff836d55f.jpg"];	
+		EGOQuickPhoto *photo7 = [[EGOQuickPhoto alloc] initWithImageURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b.jpg"] 
+																   name:@"3329114220_5fbc5bc92b.jpg"];	
 		
 		EGOQuickPhotoSource *source = [[EGOQuickPhotoSource alloc] initWithPhotos:[NSArray arrayWithObjects:photo, photo2, photo3, photo4, 
-																				   photo, photo2, photo3, photo4,
+																				   photo5, photo6, photo7, nil, photo4,
 																				   photo, photo2, photo3, photo4, 
 																				   photo, photo2, photo3, photo4, 
 																				   photo, photo2, photo3, photo4, 
@@ -204,10 +213,7 @@
 		[self.navigationController pushViewController:thumbsController animated:YES];
 		[thumbsController release];
 		[source release];		
-		[photo release];
-		[photo2 release];
-		[photo3 release];
-		[photo4 release];
+		[photo release]; [photo2 release]; [photo3 release]; [photo4 release]; [photo5 release]; [photo6 release]; [photo7 release];
 	}
 }
 
