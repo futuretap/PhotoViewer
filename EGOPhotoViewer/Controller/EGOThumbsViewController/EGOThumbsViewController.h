@@ -28,6 +28,7 @@
 }
 
 - (id)initWithPhotoSource:(id<EGOPhotoSource>)aSource;
+- (void)didSelectThumbAtIndex:(NSInteger)index;
 
 @property(nonatomic,readonly) id<EGOPhotoSource> photoSource;
 @property(nonatomic, retain) EGOStoredBarStyles *storedStyles;

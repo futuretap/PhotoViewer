@@ -85,6 +85,7 @@
 		photoController.showSeeAll = NO;
 		[self.navigationController pushViewController:photoController animated:YES];
 		[photoController moveToPhotoAtIndex:index animated:NO];
+		[photoController release];
 	}
 }
 
