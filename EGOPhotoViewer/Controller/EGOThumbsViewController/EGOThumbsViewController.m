@@ -80,6 +80,12 @@
 - (void)didSelectThumbAtIndex:(NSInteger)index {
 	if (self.delegate != nil)
 		[self.delegate thumbsViewController:self didSelectThumbAtIndex:index];
+	else {
+		EGOPhotoViewController *photoController = [[EGOPhotoViewController alloc] initWithPhotoSource:self.photoSource];
+		photoController.showSeeAll = NO;
+		[self.navigationController pushViewController:photoController animated:YES];
+		[photoController moveToPhotoAtIndex:index animated:NO];
+	}
 }
 
 #pragma mark -

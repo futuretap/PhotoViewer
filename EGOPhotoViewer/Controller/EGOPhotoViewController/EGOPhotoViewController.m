@@ -48,6 +48,7 @@
 @synthesize photoSource=_photoSource; 
 @synthesize photoViews=_photoViews;
 @synthesize _fromPopover;
+@synthesize showSeeAll = _showSeeAll;
 
 - (id)initWithPhoto:(id<EGOPhoto>)aPhoto {
 	return [self initWithPhotoSource:[[[EGOQuickPhotoSource alloc] initWithPhotos:[NSArray arrayWithObjects:aPhoto,nil]] autorelease]];
@@ -71,7 +72,7 @@
 		self.wantsFullScreenLayout = YES;		
 		_photoSource = [aSource retain];
 		_pageIndex=0;
-		
+		_showSeeAll = YES;
 	}
 	
 	return self;
@@ -212,7 +213,7 @@
 		self.navigationController.toolbar.translucent = YES;
 	}
 
-	if([self.photoSource numberOfPhotos]>1) {
+	if([self.photoSource numberOfPhotos]>1 && self.showSeeAll) {
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
 												  initWithTitle:NSLocalizedString(@"See All", @"")
 												  style:UIBarButtonItemStyleBordered target:self action:@selector(showThumbnails)];

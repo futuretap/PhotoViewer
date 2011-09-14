@@ -63,6 +63,7 @@
 	UIView *_popoverOverlay;
 	UIView *_transferView;
 	
+	BOOL _showSeeAll;
 }
 
 - (id)initWithPhoto:(id<EGOPhoto>)aPhoto;
@@ -77,6 +78,7 @@
 @property(nonatomic,retain) NSMutableArray *photoViews;
 @property(nonatomic,retain) UIScrollView *scrollView;
 @property(nonatomic,assign) BOOL _fromPopover;
+@property (nonatomic, assign, getter=isShowSeeAll) BOOL showSeeAll;
 
 - (NSInteger)currentPhotoIndex;
 - (void)moveToPhotoAtIndex:(NSInteger)index animated:(BOOL)animated;
