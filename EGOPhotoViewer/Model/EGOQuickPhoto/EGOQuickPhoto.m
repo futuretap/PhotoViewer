@@ -30,7 +30,7 @@
 @synthesize URL=_URL, caption=_caption, image=_image, size=_size, failed=_failed, thumb=_thumb, thumbURL=_thumbURL;
 
 - (id)initWithImageURL:(NSURL*)aURL image:(UIImage*)aImage name:(NSString*)aName thumbURL:(NSURL *)aThumbURL thumb:(UIImage *)aThumb{
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		_URL = [aURL retain];
 		_caption = [aName retain];
 		_image = [aImage retain];

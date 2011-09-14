@@ -62,8 +62,8 @@
 	BOOL _fromPopover;
 	UIView *_popoverOverlay;
 	UIView *_transferView;
-	
 	BOOL _showSeeAll;
+    BOOL _actionButtonHidden;
 }
 
 - (id)initWithPhoto:(id<EGOPhoto>)aPhoto;
@@ -74,11 +74,13 @@
 - (id)initWithPhotoSource:(id <EGOPhotoSource>)aPhotoSource;
 - (id)initWithPopoverController:(id)aPopoverController photoSource:(id <EGOPhotoSource>)aPhotoSource;
 
-@property(nonatomic,readonly) id <EGOPhotoSource> photoSource;
+@property(nonatomic,retain) id <EGOPhotoSource> photoSource;
 @property(nonatomic,retain) NSMutableArray *photoViews;
 @property(nonatomic,retain) UIScrollView *scrollView;
 @property(nonatomic,assign) BOOL _fromPopover;
 @property (nonatomic, assign, getter=isShowSeeAll) BOOL showSeeAll;
+@property(nonatomic,assign) BOOL actionButtonHidden;
+@property(nonatomic,assign) BOOL doneButtonHidden;
 
 - (NSInteger)currentPhotoIndex;
 - (void)moveToPhotoAtIndex:(NSInteger)index animated:(BOOL)animated;

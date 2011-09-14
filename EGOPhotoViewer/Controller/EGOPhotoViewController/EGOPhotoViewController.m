@@ -49,6 +49,8 @@
 @synthesize photoViews=_photoViews;
 @synthesize _fromPopover;
 @synthesize showSeeAll = _showSeeAll;
+@synthesize actionButtonHidden=_actionButtonHidden;
+@synthesize doneButtonHidden;
 
 - (id)initWithPhoto:(id<EGOPhoto>)aPhoto {
 	return [self initWithPhotoSource:[[[EGOQuickPhotoSource alloc] initWithPhotos:[NSArray arrayWithObjects:aPhoto,nil]] autorelease]];
@@ -63,23 +65,20 @@
 }
 
 - (id)initWithPhotoSource:(id <EGOPhotoSource> )aSource{
-	if (self = [super init]) {
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleBarsNotification:) name:@"EGOPhotoViewToggleBars" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoViewDidFinishLoading:) name:@"EGOPhotoDidFinishLoading" object:nil];
-		
+	if ((self = [super init])) {
 		self.hidesBottomBarWhenPushed = YES;
 		self.wantsFullScreenLayout = YES;		
 		_photoSource = [aSource retain];
-		_pageIndex=0;
 		_showSeeAll = YES;
+		_pageIndex = 0;
+		_actionButtonHidden = NO;
 	}
 	
 	return self;
 }
 
 - (id)initWithPopoverController:(id)aPopoverController photoSource:(id <EGOPhotoSource>)aPhotoSource {
-	if (self = [self initWithPhotoSource:aPhotoSource]) {
+	if ((self = [self initWithPhotoSource:aPhotoSource])) {
 		_popover = aPopoverController;
 	}
 	
@@ -147,13 +146,12 @@
 		
 	}
 #endif
-	
-
 }
 
 - (void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
-	
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleBarsNotification:) name:@"EGOPhotoViewToggleBars" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoViewDidFinishLoading:) name:@"EGOPhotoDidFinishLoading" object:nil];
 	if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 3.2) {
 		
 		UIView *view = self.view;
@@ -162,12 +160,9 @@
 		}
 		
 		while (view != nil) {
-			
 			if ([view isKindOfClass:NSClassFromString(@"UIPopoverView")]) {
-				
 				_popover = view;
 				break;
-			
 			} 
 			view = view.superview;
 		}
@@ -175,13 +170,15 @@
 #ifndef BUILD_FOR_3_0
 		if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad && _popover==nil) {
 			[self.navigationController setNavigationBarHidden:NO animated:NO];
+
 		}
 #endif
-		
 	} else {
-		
 		_popover = nil;
-		
+	}
+	
+	if (_barsHidden) {
+		[self setStatusBarHidden:YES animated:YES];
 	}
 	
 	if(!_storedOldStyles) {
@@ -199,7 +196,7 @@
 		_storedOldStyles = YES;
 	}	
 	
-	if ([self.navigationController isToolbarHidden] && (!_popover || ([self.photoSource numberOfPhotos] > 1))) {
+	if ([self.navigationController isToolbarHidden] && ((!_popover && ([self.photoSource numberOfPhotos] > 1 || !_actionButtonHidden)) || ([self.photoSource numberOfPhotos] > 1))) {
 		[self.navigationController setToolbarHidden:NO animated:YES];
 	}
 	
@@ -212,7 +209,7 @@
 		self.navigationController.toolbar.barStyle = UIBarStyleBlack;
 		self.navigationController.toolbar.translucent = YES;
 	}
-
+	
 	if([self.photoSource numberOfPhotos]>1 && self.showSeeAll) {
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
 												  initWithTitle:NSLocalizedString(@"See All", @"")
@@ -228,11 +225,14 @@
 	if (_popover) {
 		[self addObserver:self forKeyPath:@"contentSizeForViewInPopover" options:NSKeyValueObservingOptionNew context:NULL];
 	}
-	
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
 	[super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"EGOPhotoViewToggleBars" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"EGOPhotoDidFinishLoading" object:nil];    
+
+    [self setStatusBarHidden:NO animated:YES];
 	
 	self.navigationController.navigationBar.barStyle = _oldNavBarStyle;
 	self.navigationController.navigationBar.tintColor = _oldNavBarTintColor;
@@ -276,7 +276,6 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
 	_rotating = YES;
-	
 	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation) && !_popover) {
 		CGRect rect = [[UIScreen mainScreen] bounds];
 		self.scrollView.contentSize = CGSizeMake(rect.size.height * [self.photoSource numberOfPhotos], rect.size.width);
@@ -335,7 +334,7 @@
 	}
 	
 #ifndef BUILD_FOR_3_0
-	if (!_popover && UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad && !_fromPopover) {
+	if (!_popover && UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad && !_fromPopover && !self.doneButtonHidden) {
 		if (self.modalPresentationStyle == UIModalPresentationFullScreen) {
 			UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(done:)];
 			self.navigationItem.rightBarButtonItem = doneButton;
@@ -344,11 +343,17 @@
 	} else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
 		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
 	}
-#else 
+#else	
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
 #endif
 	
-	UIBarButtonItem *action = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonHit:)];
+    UIBarButtonItem *action;
+    if (_actionButtonHidden) {
+        action = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        action.width = 40.0f;
+    } else {
+        action = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonHit:)];
+    }
 	UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 	
 	if ([self.photoSource numberOfPhotos] > 1) {
@@ -417,11 +422,8 @@
 		[[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:UIStatusBarAnimationFade];
 		
 	} else {
-#ifdef BUILD_FOR_3_0
 		[[UIApplication sharedApplication] setStatusBarHidden:hidden animated:animated];
-#endif
 	}
-
 }
 
 - (void)setBarsHidden:(BOOL)hidden animated:(BOOL)animated{
@@ -431,47 +433,81 @@
 		[_captionView setCaptionHidden:hidden];
 		return;
 	}
+    
 		
 	[self setStatusBarHidden:hidden animated:animated];
-	
-#ifndef BUILD_FOR_3_0
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-		
-		if (!_popover) {
-			
-			if (animated) {
-				[UIView beginAnimations:nil context:NULL];
-				[UIView setAnimationDuration:0.3f];
-				[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-			}
-			
-			self.navigationController.navigationBar.alpha = hidden ? 0.0f : 1.0f;
-			self.navigationController.toolbar.alpha = hidden ? 0.0f : 1.0f;
-			
-			if (animated) {
-				[UIView commitAnimations];
-			}
-			
-		} 
-		
-	} else {
-		
-		[self.navigationController setNavigationBarHidden:hidden animated:animated];
-		[self.navigationController setToolbarHidden:hidden animated:animated];
-		
-	}
-#else
-	
-	[self.navigationController setNavigationBarHidden:hidden animated:animated];
-	[self.navigationController setToolbarHidden:hidden animated:animated];
-	
-#endif
+    
+    // fix for a bug? when coming back from leaving the application the navigationBar gets put at the wrong y origin
+    CGRect frame = self.navigationController.navigationBar.frame;
+    [self.navigationController.navigationBar setFrame:CGRectMake(frame.origin.x, 20.0, frame.size.width, frame.size.height)];
 	
 	if (_captionView) {
 		[_captionView setCaptionHidden:hidden];
 	}
 	
 	_barsHidden=hidden;
+
+#ifndef BUILD_FOR_3_0
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		
+		if (!_popover) {
+			
+            void (^updateProperties) (void) = ^ {
+                self.navigationController.navigationBar.alpha = hidden ? 0.0f : 1.0f;
+                self.navigationController.toolbar.alpha = hidden ? 0.0f : 1.0f;
+                if (self.tabBarController) {
+                    
+                    int height = self.tabBarController.tabBar.bounds.size.height;
+                    for(UIView *view in self.tabBarController.view.subviews)
+                    {
+                        int newHeight;
+                        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+                        if (UIInterfaceOrientationIsPortrait(orientation)) {
+                            newHeight = hidden ? [[UIScreen mainScreen] bounds].size.height : [[UIScreen mainScreen] bounds].size.height - height;
+                        } else {
+                            newHeight = hidden ? [[UIScreen mainScreen] bounds].size.width : [[UIScreen mainScreen] bounds].size.width - height;
+                        }
+                        
+                        
+                        if([view isKindOfClass:[UITabBar class]])
+                        {
+                            [view setFrame:CGRectMake(view.frame.origin.x, newHeight, view.frame.size.width, view.frame.size.height)];
+                        } 
+                        else 
+                        {
+                            CGRect newFrame = CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, newHeight);
+                            [view setFrame:newFrame];
+                            
+                            // update our VC frame with animation
+                            [self.view setFrame:newFrame];
+                            
+                        }
+                        
+                    }
+                }
+
+            };
+            
+            
+            if (animated) {
+                [UIView animateWithDuration:0.3f animations:updateProperties];
+            } else {
+                updateProperties();
+            }
+			
+		} 
+		return;
+		
+	} 
+#endif
+		
+	[self.navigationController setNavigationBarHidden:hidden animated:animated];
+    
+	// Set toolbar hidden if there is only one pic and the action menu is hidden
+	if ([self.photoSource numberOfPhotos] <= 1 && _actionButtonHidden)
+		[self.navigationController setToolbarHidden:YES animated:animated];
+	else
+		[self.navigationController setToolbarHidden:hidden animated:animated];
 	
 }
 
@@ -714,9 +750,7 @@
 		}
 		
 	}
-	
 #endif
-	
 }
 
 - (void)moveToPhotoAtIndex:(NSInteger)index animated:(BOOL)animated {
@@ -944,14 +978,13 @@
 	
 	MFMailComposeViewController *mailViewController = [[MFMailComposeViewController alloc] init];
 	[mailViewController setSubject:@"Shared Photo"];
-	[mailViewController addAttachmentData:[NSData dataWithData:UIImagePNGRepresentation(((EGOPhotoImageView*)[self.photoViews objectAtIndex:_pageIndex]).imageView.image)] mimeType:@"png" fileName:@"Photo.png"];
+	[mailViewController addAttachmentData:[NSData dataWithData:UIImagePNGRepresentation(((EGOPhotoImageView*)[self.photoViews objectAtIndex:_pageIndex]).imageView.image)] mimeType:@"image/png" fileName:@"Photo.png"];
 	mailViewController.mailComposeDelegate = self;
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+
 	if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
 		mailViewController.modalPresentationStyle = UIModalPresentationPageSheet;
 	}
-#endif
 	
 	[self presentModalViewController:mailViewController animated:YES];
 	[mailViewController release];

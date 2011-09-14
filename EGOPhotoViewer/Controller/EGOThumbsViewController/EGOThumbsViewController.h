@@ -25,6 +25,7 @@
 	EGOThumbsScrollView *_scrollView;
 	EGOStoredBarStyles *storedStyles;
 	id<EGOThumbsViewControllerDelegate> delegate;
+	BOOL isBeingPushed;
 }
 
 - (id)initWithPhotoSource:(id<EGOPhotoSource>)aSource;

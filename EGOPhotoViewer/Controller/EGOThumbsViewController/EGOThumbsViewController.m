@@ -48,14 +48,16 @@
 	self.navigationController.navigationBar.tintColor = [self.photoSource navigationBarTintColor];
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 	self.navigationController.navigationBar.translucent = YES;
+	[self.navigationController setToolbarHidden:YES animated:YES];
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{	
-	if (self.storedStyles) {
+	if (!isBeingPushed && self.storedStyles) {
 		[self.storedStyles restoreToController:self withAnimation:animated];
 	}
+	isBeingPushed = NO;
 }
 
 
@@ -83,6 +85,7 @@
 	else {
 		EGOPhotoViewController *photoController = [[EGOPhotoViewController alloc] initWithPhotoSource:self.photoSource];
 		photoController.showSeeAll = NO;
+		isBeingPushed = YES;
 		[self.navigationController pushViewController:photoController animated:YES];
 		[photoController moveToPhotoAtIndex:index animated:NO];
 		[photoController release];

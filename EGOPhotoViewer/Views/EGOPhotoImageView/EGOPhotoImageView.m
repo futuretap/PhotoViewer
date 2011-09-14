@@ -28,19 +28,6 @@
 
 #define ZOOM_VIEW_TAG 0x101
 
-#ifndef BUILD_FOR_3_0
-@interface RotateGesture : UIRotationGestureRecognizer {}
-@end
-
-@implementation RotateGesture
-- (BOOL)canBePreventedByGestureRecognizer:(UIGestureRecognizer*)gesture{
-	return NO;
-}
-- (BOOL)canPreventGestureRecognizer:(UIGestureRecognizer *)preventedGestureRecognizer{
-	return YES;
-}
-@end
-#endif
 
 @interface EGOPhotoImageView (Private)
 - (void)layoutScrollViewAnimated:(BOOL)animated;
@@ -58,7 +45,7 @@
 @synthesize loading=_loading;
 
 - (id)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
+    if ((self = [super initWithFrame:frame])) {
 		
 		self.backgroundColor = [UIColor blackColor];
 		self.userInteractionEnabled = NO;
@@ -87,12 +74,6 @@
 		[self addSubview:activityView];
 		_activityView = [activityView retain];
 		[activityView release];
-		
-#ifndef BUILD_FOR_3_0
-		RotateGesture *gesture = [[RotateGesture alloc] initWithTarget:self action:@selector(rotate:)];
-		[self addGestureRecognizer:gesture];
-		[gesture release];
-#endif
 	}
     return self;
 }
@@ -278,12 +259,6 @@
 }
 
 - (void)layoutScrollViewAnimated:(BOOL)animated{
-
-	if (animated) {
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:0.0001];
-	}
-		
 	CGFloat hfactor = self.imageView.image.size.width / self.frame.size.width;
 	CGFloat vfactor = self.imageView.image.size.height / self.frame.size.height;
 	
@@ -300,11 +275,6 @@
 	self.scrollView.contentSize = CGSizeMake(self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
 	self.scrollView.contentOffset = CGPointMake(0.0f, 0.0f);
 	self.imageView.frame = self.scrollView.bounds;
-
-
-	if (animated) {
-		[UIView commitAnimations];
-	}
 }
 
 - (CGSize)sizeForPopover{
@@ -404,8 +374,7 @@
 	
 }
 
-- (void)killScrollViewZoom{
-	
+- (void)killScrollViewZoom{    
 	if (!self.scrollView.zoomScale > 1.0f) return;
 
 	[UIView beginAnimations:nil context:NULL];
@@ -451,8 +420,8 @@
 	
 }
 
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale{
-			
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
+			    
 	if (scrollView.zoomScale > 1.0f) {		
 		
 		
@@ -513,58 +482,10 @@
 		}
 
 	} else {
+        
 		[self layoutScrollViewAnimated:YES];
 	}
 }	
-
-
-#pragma mark -
-#pragma mark RotateGesture
-
-- (void)rotate:(UIRotationGestureRecognizer*)gesture{
-
-	if (gesture.state == UIGestureRecognizerStateBegan) {
-		
-		[self.layer removeAllAnimations];
-		_beginRadians = gesture.rotation;
-		self.layer.transform = CATransform3DMakeRotation(_beginRadians, 0.0f, 0.0f, 1.0f);
-		
-	} else if (gesture.state == UIGestureRecognizerStateChanged) {
-		
-		self.layer.transform = CATransform3DMakeRotation((_beginRadians + gesture.rotation), 0.0f, 0.0f, 1.0f);
-
-	} else {
-		
-		CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform"];
-		animation.toValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
-		animation.duration = 0.3f;
-		animation.removedOnCompletion = NO;
-		animation.fillMode = kCAFillModeForwards;
-		animation.delegate = self;
-		[animation setValue:[NSNumber numberWithInt:202] forKey:@"AnimationType"];
-		[self.layer addAnimation:animation forKey:@"RotateAnimation"];
-		
-	} 
-
-	
-}
-
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
-	
-	if (flag) {
-		
-		if ([[anim valueForKey:@"AnimationType"] integerValue] == 101) {
-			
-			[self resetBackgroundColors];
-			
-		} else if ([[anim valueForKey:@"AnimationType"] integerValue] == 202) {
-			
-			self.layer.transform = CATransform3DIdentity;
-			
-		}
-	}
-	
-}
 
 
 #pragma mark -
